@@ -1,0 +1,34 @@
+{
+  "name": "leetcode-backend",
+  "version": "1.0.0",
+  "description": "simple http server for leetcode backend",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsc -b && node dist/index.js"
+  },
+  "keywords": [
+    "leetcode",
+    "coding",
+    "express",
+    "better-auth"
+  ],
+  "author": "Rohit Kumar",
+  "license": "ISC",
+  "dependencies": {
+    "@better-auth/cli": "^1.3.34",
+    "@prisma/client": "^6.19.0",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.5",
+    "better-auth": "^1.3.34",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "typescript": "^5.9.3"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "prisma": "^6.19.0"
+  }
+}

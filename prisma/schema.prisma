@@ -1,0 +1,116 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ProblemStatus{
+  ACCEPTED
+  WRONG_ANSWER
+  COMPILATION_ERROR
+  TLE
+  RUNTIME_ERROR
+}
+
+
+model User {
+  id         String   @id @default(uuid())
+  email      String   @unique
+  name       String?
+  image      String?
+  emailVerified DateTime?
+
+  profilePic String?
+  isDeleted  Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  accounts  Account[]
+  sessions  Session[]
+  password  Password?
+
+  votes      ProblemVote[]
+  submission Submission[]
+}
+model Account {
+  id                String   @id @default(uuid())
+  userId            String
+  provider          String
+  providerAccountId String
+  accessToken       String?
+  refreshToken      String?
+  expiresAt         Int?
+
+  user              User     @relation(fields: [userId], references: [id])
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  userId    String
+  expiresAt DateTime
+  sessionToken String @unique
+
+  user      User @relation(fields: [userId], references: [id])
+}
+
+model Password {
+  id     String @id @default(uuid())
+  userId String @unique
+  hash   String
+
+  user   User @relation(fields: [userId], references: [id])
+}
+
+model Submission {
+  createAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  id Int @default(autoincrement()) @id
+  status ProblemStatus 
+  code String
+  runtime Int 
+  memoryKb Int
+
+  userId String 
+  problemId Int
+
+  user User @relation(fields: [userId], references: [id])
+  problem Problem @relation(fields: [problemId], references: [id])
+  
+}
+
+model Problem{
+  createAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  id Int @default(autoincrement()) @id
+  slug String @unique
+  name String 
+  description String
+  samplecode String
+
+  vote ProblemVote[]
+  submission Submission[]
+}
+
+model ProblemVote{
+  id Int @default(autoincrement()) @id
+  userId String
+  problemId Int
+
+  user User @relation(fields: [userId], references: [id])
+  problem Problem @relation(fields: [problemId], references: [id])
+
+  @@unique([userId,problemId])
+}
