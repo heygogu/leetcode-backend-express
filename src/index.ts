@@ -3,7 +3,6 @@ import { fromNodeHeaders, toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth.js";
 import cors from "cors";
 import dotenv from "dotenv";
-
 dotenv.config();
 
 const app = express();
@@ -18,14 +17,16 @@ app.use(
 
 app.all("/api/auth/*splat", toNodeHandler(auth));
 
+app.use(express.json());
+
 app.get("/api/me", async (req, res) => {
   const session = await auth.api.getSession({
     headers: fromNodeHeaders(req.headers),
   });
-  return res.json(session);
-});
+  console.log(Object.keys(auth.api));
 
-app.use(express.json());
+  return res.json(session?.user);
+});
 
 app.listen(port, () => {
   console.log(`Better Auth app listening on port ${port}`);
